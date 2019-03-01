@@ -70,6 +70,11 @@ h1 #{__('Hello')}
 <h1>{{ __('Hello') }}</h1>
 ```
 
+
+2. Add to routes new controller 
+```
+app.get('/lang/:lang', keystonei18n.switchLocale)
+```
 ## License
 
 GNU General Public License
