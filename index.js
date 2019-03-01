@@ -27,26 +27,30 @@ if (twigAvailable) {
 var _this = {
 	defaultOptions: {
 		locales: ['en', 'es'],
-    	endpoint: '/lang',
+		endpoint: '/lang',
 		defaultLocale: 'en',
 		cookie: 'language'
 	},
-    init: function (options) {
+	cookie_name: "",
+	init: function (options) {
 		// Get options
 		options = extend(_this.defaultOptions, options);
-        // Configure i18n
-        i18n.configure(options);
-        i18n.setLocale(options.defaultLocale);
-        // Add-in i18n support
-        keystone.pre('routes', i18n.init);
-        // Locale switch endpoint
-        keystone.get('/' + options.endpoint.replace(/^\/|\/$/g, '') + '/:lang', _this.switchLocale);
-    },
-    switchLocale: function (req, res) {
-        i18n.setLocale(req.params.lang);
-        res.cookie('language', req.params.lang, { maxAge: 900000, httpOnly: true });
-        res.redirect('back');
-    }
+		
+		// Set cookie name for switchLocale
+		_this.cookie_name = options.cookie;
+		
+		// Setup i18n
+		i18n.configure(options);
+		i18n.setLocale(options.defaultLocale);
+		
+		// Push to keystones
+		keystone.pre('routes', i18n.init);
+	},
+	switchLocale: function (req, res) {
+		i18n.setLocale(req.params.lang);
+		res.cookie(_this.cookie_name, req.params.lang, { maxAge: 900000, httpOnly: true });
+		res.redirect('back');
+	}
 };
 
 // export
